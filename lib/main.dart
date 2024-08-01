@@ -45,8 +45,54 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  final realController = TextEditingController();
+  final dolarController = TextEditingController();
+  final euroController = TextEditingController();
+
   late double dollar;
   late double euro;
+
+  // Adicionado: Método para limpar todos os campos de texto
+  void _clearAll() {
+    realController.text = "";
+    dolarController.text = "";
+    euroController.text = "";
+  }
+
+  // Adicionado: Método para lidar com mudanças no campo de Reais
+  void _realChanged(String text) {
+    if (text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double real = double.parse(text);
+    dolarController.text = (real / dollar).toStringAsFixed(2);
+    euroController.text = (real / euro).toStringAsFixed(2);
+  }
+
+  // Adicionado: Método para lidar com mudanças no campo de Dólares
+  void _dolarChanged(String text) {
+    if (text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double dolar = double.parse(text);
+    realController.text = (dolar * dollar).toStringAsFixed(2);
+    euroController.text = (dolar * dollar / euro).toStringAsFixed(2);
+  }
+
+  // Adicionado: Método para lidar com mudanças no campo de Euros
+  void _euroChanged(String text) {
+    if (text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double euroValue = double.parse(text);
+    realController.text = (euroValue * euro).toStringAsFixed(2);
+    dolarController.text = (euroValue * euro / dollar).toStringAsFixed(2);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,48 +135,21 @@ class _HomeState extends State<Home> {
                 if (snapshot.hasData) {
                   dollar = double.parse(snapshot.data!["USDBRL"]["low"]);
                   euro = double.parse(snapshot.data!["EURBRL"]["low"]);
-                  return const SingleChildScrollView(
-                    padding: EdgeInsets.all(10.0),
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(10.0),
                     child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Icon(Icons.monetization_on, size: 150.0, color: Colors.amber,),
-                      SizedBox(height: 20.0,),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Real",
-                          labelStyle: TextStyle(color: Colors.amber),
-                          border: OutlineInputBorder(),
-                          prefixText: "R\$",
-                        ),
-                        style: TextStyle(
-                          color: Colors.amber, fontSize: 25.0,
-                        ),
-                      ),
-                      SizedBox(height: 20.0,),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Dolár",
-                          labelStyle: TextStyle(color: Colors.amber),
-                          border: OutlineInputBorder(),
-                          prefixText: "\$",
-                        ),
-                        style: TextStyle(
-                          color: Colors.amber, fontSize: 25.0,
-                        ),
-                      ),
-                      SizedBox(height: 20.0,),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: "Euro",
-                          labelStyle: TextStyle(color: Colors.amber),
-                          border: OutlineInputBorder(),
-                          prefixText: "€",
-                        ),
-                        style: TextStyle(
-                          color: Colors.amber, fontSize: 25.0,
-                        ),
-                      ),
+                      const Icon(
+                        Icons.monetization_on,
+                        size: 150.0,
+                        color: Colors.amber,),
+                      const SizedBox(height: 20.0,),
+                      buildTextField("Reais","R\$", realController, _realChanged),
+                      const SizedBox(height: 20.0,),
+                      buildTextField("Dólares","\$", dolarController, _dolarChanged),
+                      const SizedBox(height: 20.0,),
+                      buildTextField("Euros","€", euroController, _euroChanged),
                     ],
                     ),
                   );
@@ -152,4 +171,22 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  Widget buildTextField(String label, String prefix, TextEditingController c, Function(String) f){
+    return TextField(
+      controller: c,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.amber),
+        border: const OutlineInputBorder(),
+        prefixText: prefix,
+      ),
+      style: const TextStyle(
+        color: Colors.amber, fontSize: 25.0,
+      ),
+      onChanged: f,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true), // Adicionado: Tipo de teclado numérico
+    );
+  }
 }
+
