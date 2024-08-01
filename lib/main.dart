@@ -9,11 +9,9 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized(); // Inicializa o Flutter
 
     Map data = await getData();
-    print(data);
 
-
-  runApp(MaterialApp(
-    home: Container(),
+  runApp(const MaterialApp(
+    home: Home(),
     debugShowCheckedModeBanner: false, // tirar a faixa debug
   ));
 }
@@ -26,4 +24,27 @@ Future<Map> getData() async {
     throw Exception("Falha ao carregar os dados");
   }
 }
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("\$ Conversor \$"),
+        backgroundColor: Colors.amber,
+        centerTitle: true,
+      ),
+
+    );
+  }
+}
+
 
