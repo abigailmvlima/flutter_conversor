@@ -1,73 +1,209 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:async/async.dart';
-import 'dart:convert';
-
-const request = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL";
-
-void main() async{
-
-  http.Response response = await http.get(request as Uri);
-  print(json.decode(response.body));
-
-  runApp(MaterialApp(
-    home: Container(),
-    debugShowCheckedModeBanner: false, // tirar a faixa debug
-  ));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-gpt
-
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'dart:async';
 import 'dart:convert';
 
 const request = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL";
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Certifique-se de que o Flutter esteja inicializado
+  WidgetsFlutterBinding.ensureInitialized(); // Inicializa o Flutter
 
-  http.Response response = await http.get(Uri.parse(request));
-  print(json.decode(response.body));
+  Map data = await getData();
 
-  runApp(MyApp());
+  runApp(const MaterialApp(
+    home: Home(),
+    debugShowCheckedModeBanner: false, // tirar a faixa debug
+  ));
 }
 
-class MyApp extends StatelessWidget {
+Future<Map> getData() async {
+  http.Response response = await http.get(Uri.parse(request));
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception("Falha ao carregar os dados");
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late double dollar;
+  late double euro;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Home(),
-      debugShowCheckedModeBanner: false, // Tirar a faixa debug
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("\$ Conversor \$"),
+        backgroundColor: Colors.amber,
+        centerTitle: true,
+      ),
+      body: FutureBuilder<Map>(
+        future: getData(),
+        builder: (context, snapshot) {
+          switch(snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+              return const Center(
+                child: Text(
+                  "Carregando dados...",
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontSize: 25.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            default:
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text(
+                    "Erro ao carregar dados :(",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 25.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              } else {
+                dollar = snapshot.data["USDBRL"] ["low"];
+                euro = snapshot.data["EURBRL"] ["low"];
+                return const Center(
+                  child: Text(
+                    "Dados carregados com sucesso!",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 25.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+          }
+        },
+      ),
     );
   }
 }
 
-class Home extends StatelessWidget {
+
+
+gpt funcionando
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+
+const request = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL";
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Inicializa o Flutter
+
+  Map data = await getData();
+
+  runApp(const MaterialApp(
+    home: Home(),
+    debugShowCheckedModeBanner: false, // tirar a faixa debug
+  ));
+}
+
+Future<Map> getData() async {
+  http.Response response = await http.get(Uri.parse(request));
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else {
+    throw Exception("Falha ao carregar os dados");
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late double dollar;
+  late double euro;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Conversor de Moedas"),
+        title: const Text("\$ Conversor \$"),
+        backgroundColor: Colors.amber,
+        centerTitle: true,
       ),
-      body: const Center(
-        child: Text("Bem-vindo ao conversor de moedas"),
+      body: FutureBuilder<Map>(
+        future: getData(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+              return const Center(
+                child: Text(
+                  "Carregando dados...",
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontSize: 25.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            default:
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text(
+                    "Erro ao carregar dados :(",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 25.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              } else {
+                if (snapshot.hasData) {
+                  dollar = double.parse(snapshot.data!["USDBRL"]["low"]);
+                  euro = double.parse(snapshot.data!["EURBRL"]["low"]);
+                  return Center(
+                    child: Text(
+                      "Dados carregados com sucesso!\nDólar: $dollar\nEuro: $euro",
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontSize: 25.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Text(
+                      "Sem dados disponíveis.",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 25.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+              }
+          }
+        },
       ),
     );
   }
