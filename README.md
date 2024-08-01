@@ -1,16 +1,11 @@
-# flutter_conversor
+# Conversor Real/Dólar/Euro
 
-A new Flutter project.
 
-## Getting Started
+![tela1](https://github.com/user-attachments/assets/79130135-7795-47e4-a029-04d1ccf4d2a9)
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+![tela2](https://github.com/user-attachments/assets/52982071-0d2d-4b1e-9a6a-00b2cb009b7b)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![tela3](https://github.com/user-attachments/assets/36a99b0c-ec22-49cb-aa11-39fb8fbf078f)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![tela4](https://github.com/user-attachments/assets/8c1c5a94-e1d0-4015-89cb-e912921df18f)
