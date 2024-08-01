@@ -1,0 +1,74 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:async/async.dart';
+import 'dart:convert';
+
+const request = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL";
+
+void main() async{
+
+  http.Response response = await http.get(request as Uri);
+  print(json.decode(response.body));
+
+  runApp(MaterialApp(
+    home: Container(),
+    debugShowCheckedModeBanner: false, // tirar a faixa debug
+  ));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+gpt
+
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+const request = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL";
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Certifique-se de que o Flutter esteja inicializado
+
+  http.Response response = await http.get(Uri.parse(request));
+  print(json.decode(response.body));
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Home(),
+      debugShowCheckedModeBanner: false, // Tirar a faixa debug
+    );
+  }
+}
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Conversor de Moedas"),
+      ),
+      body: const Center(
+        child: Text("Bem-vindo ao conversor de moedas"),
+      ),
+    );
+  }
+}
